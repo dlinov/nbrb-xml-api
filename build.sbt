@@ -11,26 +11,27 @@ lazy val root = project
   .settings(
     name := "nbrb-xml-api",
     version := "0.1.0",
-
     scalaVersion := "2.13.2",
-
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-generic-extras" % CirceVersion,
       "org.http4s" %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s" %% "http4s-blaze-client" % Http4sVersion,
       "org.http4s" %% "http4s-circe" % Http4sVersion,
       "org.http4s" %% "http4s-dsl" % Http4sVersion,
+      "org.http4s" %% "http4s-scala-xml" % Http4sVersion,
       "org.scala-lang.modules" %% "scala-xml" % ScalaXmlVersion,
       "com.github.pureconfig" %% "pureconfig" % PureConfigVersion,
-      "ch.qos.logback" % "logback-classic" % LogbackVersion,
+      "ch.qos.logback" % "logback-classic" % LogbackVersion
     )
   )
 
 scalacOptions ++= Seq(
   "-deprecation",
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-language:higherKinds",
   // "-language:postfixOps",
   "-feature",
   "-Xfatal-warnings",
+  "-Ymacro-annotations"
 )
