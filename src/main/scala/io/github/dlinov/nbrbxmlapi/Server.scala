@@ -1,9 +1,10 @@
-import cats.effect.{ConcurrentEffect, ContextShift, Timer}
+package io.github.dlinov.nbrbxmlapi
+
+import cats.effect.{ConcurrentEffect, ContextShift, Sync, Timer}
 import dev.profunktor.redis4cats.Redis
-import dev.profunktor.redis4cats.connection.RedisClient
-import dev.profunktor.redis4cats.data.RedisCodec
-import dev.profunktor.redis4cats.effect.Log.Stdout._
+import dev.profunktor.redis4cats.effect.Log
 import fs2.Stream
+import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -20,9 +21,7 @@ object Server {
       client <- BlazeClientBuilder[F](global).stream
       redisResource = Redis[F].utf8(config.redis.url)
       ratesProcessor = Rates.impl[F](client, redisResource)
-      httpApp = (
-        Routes.rateRoutes[F](ratesProcessor)
-      ).orNotFound
+      httpApp = Routes.rateRoutes[F](ratesProcessor).orNotFound
       finalHttpApp = GZip(Logger.httpApp(logHeaders = true, logBody = true)(httpApp))
       exitCode <- BlazeServerBuilder[F](global)
         .bindHttp(config.port.number, "0.0.0.0")
@@ -30,4 +29,15 @@ object Server {
         .serve
     } yield exitCode
   }.drain
+
+  implicit def logInstance[F[_]: Sync]: Log[F] = {
+    val underlying = Slf4jLogger.getLogger[F]
+    new Log[F] {
+      override def debug(msg: => String): F[Unit] = underlying.debug(msg)
+
+      override def error(msg: => String): F[Unit] = underlying.error(msg)
+
+      override def info(msg: => String): F[Unit] = underlying.info(msg)
+    }
+  }
 }

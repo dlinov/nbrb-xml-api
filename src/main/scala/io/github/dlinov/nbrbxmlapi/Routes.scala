@@ -1,9 +1,10 @@
+package io.github.dlinov.nbrbxmlapi
+
 import java.time.LocalDate
 
 import cats.data.EitherT
 import cats.effect.Sync
 import cats.syntax.flatMap._
-import cats.syntax.functor._
 import org.http4s.{EntityEncoder, HttpRoutes, Response}
 import org.http4s.dsl.Http4sDsl
 

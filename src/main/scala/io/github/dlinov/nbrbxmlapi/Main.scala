@@ -1,3 +1,5 @@
+package io.github.dlinov.nbrbxmlapi
+
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.syntax.either._
 import org.slf4j.LoggerFactory

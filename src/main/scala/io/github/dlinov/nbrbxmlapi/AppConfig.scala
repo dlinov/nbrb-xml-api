@@ -1,4 +1,4 @@
-import java.net.URL
+package io.github.dlinov.nbrbxmlapi
 
 final case class Port(number: Int) extends AnyVal
 

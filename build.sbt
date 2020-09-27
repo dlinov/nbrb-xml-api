@@ -7,15 +7,17 @@ val CirceVersion = "0.13.0"
 val PureConfigVersion = "0.13.0"
 val RedisVersion = "3.30"
 val Redis4CatsVersion = "0.10.3"
+val Log4CatsVersion = "1.1.1"
 
 lazy val root = project
   .in(file("."))
   .settings(
     name := "nbrb-xml-api",
-    version := "0.2.0",
+    version := "0.3.0",
     scalaVersion := "2.13.3",
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-parser" % CirceVersion,
+      "io.chrisdavenport" %% "log4cats-slf4j" % Log4CatsVersion,
       "org.http4s" %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s" %% "http4s-blaze-client" % Http4sVersion,
       "org.http4s" %% "http4s-circe" % Http4sVersion,

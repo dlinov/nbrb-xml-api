@@ -5,3 +5,5 @@
 project/metals.sbt
 .metals/
 .vscode/
+
+.DS_Store

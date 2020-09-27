@@ -1,3 +1,5 @@
+package io.github.dlinov.nbrbxmlapi
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -71,19 +73,17 @@ object Rates {
   ): Rates[F] =
     new Rates[F] {
       private val logger = LoggerFactory.getLogger(getClass)
-      private val baseUri = Uri
-        .unsafeFromString("https://www.nbrb.by/api/exrates/rates")
-        .withQueryParam("parammode", "2")
-      private val baseUri2 = Uri(
+      private val baseUri = Uri(
         scheme = Scheme.https.some,
         authority = Authority(
           host = RegName("www.nbrb.by")
         ).some,
-        path = s"api/exrates/rates",
+        path = s"/api/exrates/rates",
         query = Query.fromPairs(
           "parammode" -> "2" // "2" is to use currency codes
         )
       )
+      baseUri.authority.map(_.host)
       private val cacheTtl = SetArgs(Ttl.Ex(14.days))
 
       override def exchangeRate(
@@ -101,13 +101,13 @@ object Rates {
                 .addPath(s"$currKey")
                 .withQueryParam("ondate", dateKey)
               for {
-                _ <- Sync[F].delay(logger.debug(s"Making request for $key..."))
+                _ <- Sync[F].delay(logger.info(s"Making request for $key..."))
                 fetchedRate <- C.get(uri)(_.as[CurrencyRate])
                 _ <- RC.set(key, fetchedRate.asJson.noSpaces, cacheTtl)
               } yield fetchedRate.asRight[Exception]
             } { cachedRateJson =>
               for {
-                _ <- Sync[F].delay(logger.debug(s"Using cached result for $key"))
+                _ <- Sync[F].delay(logger.info(s"Using cached result for $key"))
                 rate <- Sync[F].delay(decode[CurrencyRate](cachedRateJson))
               } yield rate
             }
