@@ -13,20 +13,20 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "nbrb-xml-api",
-    version := "0.3.0",
+    version := "0.3.1",
     scalaVersion := "2.13.3",
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-parser" % CirceVersion,
+      "ch.qos.logback" % "logback-classic" % LogbackVersion,
+      "com.github.pureconfig" %% "pureconfig" % PureConfigVersion,
+      "dev.profunktor" %% "redis4cats-effects" % Redis4CatsVersion,
       "io.chrisdavenport" %% "log4cats-slf4j" % Log4CatsVersion,
+      "io.circe" %% "circe-parser" % CirceVersion,
       "org.http4s" %% "http4s-blaze-server" % Http4sVersion,
       "org.http4s" %% "http4s-blaze-client" % Http4sVersion,
       "org.http4s" %% "http4s-circe" % Http4sVersion,
       "org.http4s" %% "http4s-dsl" % Http4sVersion,
       "org.http4s" %% "http4s-scala-xml" % Http4sVersion,
-      "org.scala-lang.modules" %% "scala-xml" % ScalaXmlVersion,
-      "com.github.pureconfig" %% "pureconfig" % PureConfigVersion,
-      "ch.qos.logback" % "logback-classic" % LogbackVersion,
-      "dev.profunktor" %% "redis4cats-effects" % Redis4CatsVersion
+      "org.scala-lang.modules" %% "scala-xml" % ScalaXmlVersion
     )
   )
 
@@ -35,7 +35,6 @@ scalacOptions ++= Seq(
   "-encoding",
   "UTF-8",
   "-language:higherKinds",
-  // "-language:postfixOps",
   "-feature",
   "-Xfatal-warnings",
   "-Ymacro-annotations"
