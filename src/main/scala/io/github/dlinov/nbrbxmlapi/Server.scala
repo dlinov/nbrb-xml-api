@@ -17,8 +17,12 @@ object Server {
   def stream[F[_]: ConcurrentEffect](
       config: AppConfig
   )(implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
+    val logger = Slf4jLogger.getLogger[F]
     for {
       client <- BlazeClientBuilder[F](global).stream
+      _ <- Stream.emit(logger.info(s"PORT: ${sys.env.get("PORT")}"))
+      _ <- Stream.emit(logger.info(s"REDIS_URL: ${sys.env.get("REDIS_URL")}"))
+      _ <- Stream.emit(logger.info(s"Current config is: $config"))
       redisResource = Redis[F].utf8(config.redis.url)
       ratesProcessor = Rates.impl[F](client, redisResource)
       httpApp = Routes.rateRoutes[F](ratesProcessor).orNotFound

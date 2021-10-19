@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 trait Rates[F[_]] {
-  def exchangeRate(currencyCode: String, date: LocalDate): F[Either[Exception, Rates.CurrencyRate]]
+  def exchangeRate(currencyCode: String, date: LocalDate): F[Either[Throwable, Rates.CurrencyRate]]
 }
 
 object Rates {
@@ -89,7 +89,7 @@ object Rates {
       override def exchangeRate(
           currencyCode: String,
           date: LocalDate
-      ): F[Either[Exception, CurrencyRate]] = {
+      ): F[Either[Throwable, CurrencyRate]] = {
         redis.use { RC =>
           val dateKey = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
           val currKey = currencyCode.toLowerCase
