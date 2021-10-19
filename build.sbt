@@ -12,7 +12,7 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "nbrb-xml-api",
-    version := "0.3.2",
+    version := "0.3.3",
     scalaVersion := "2.13.4",
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % LogbackVersion,
@@ -38,3 +38,11 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings",
   "-Ymacro-annotations"
 )
+
+ThisBuild / assemblyMergeStrategy := {
+  case PathList("META-INF", "io.netty.versions.properties") =>
+    MergeStrategy.filterDistinctLines
+  case x =>
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+    oldStrategy(x)
+}

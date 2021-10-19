@@ -15,20 +15,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up Java version
-        uses: actions/setup-java@v1
+      - uses: olafurpg/setup-scala@v11
         with:
-          java-version: '11'
+          java-version: openjdk@1.11
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Build with sbt
+        run: sbt assembly
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/target/scala-2.13/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
