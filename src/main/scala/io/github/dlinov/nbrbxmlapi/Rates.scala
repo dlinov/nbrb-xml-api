@@ -2,8 +2,7 @@ package io.github.dlinov.nbrbxmlapi
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-import cats.effect.{Resource, Sync}
+import cats.effect.{Async, Concurrent, Resource, Sync}
 import cats.syntax.either._
 import cats.syntax.option._
 import cats.syntax.flatMap._
@@ -63,11 +62,11 @@ object Rates {
           "Cur_Scale",
           "Cur_OfficialRate"
         )(cr => (cr.id, cr.abbreviation, cr.scale, cr.rate))
-    implicit def crEntityDecoder[F[_]: Sync]: EntityDecoder[F, CurrencyRate] =
+    implicit def crEntityDecoder[F[_]: Concurrent]: EntityDecoder[F, CurrencyRate] =
       jsonOf[F, CurrencyRate]
   }
 
-  def impl[F[_]: Sync](
+  def impl[F[_]: Async](
       C: Client[F],
       redis: Resource[F, RedisCommands[F, String, String]]
   ): Rates[F] =
@@ -78,12 +77,11 @@ object Rates {
         authority = Authority(
           host = RegName("www.nbrb.by")
         ).some,
-        path = s"/api/exrates/rates",
+        path = Uri.Path.unsafeFromString("/api/exrates/rates"),
         query = Query.fromPairs(
           "parammode" -> "2" // "2" is to use currency codes
         )
       )
-      baseUri.authority.map(_.host)
       private val cacheTtl = SetArgs(Ttl.Ex(14.days))
 
       override def exchangeRate(

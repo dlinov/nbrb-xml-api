@@ -1,14 +1,13 @@
 package io.github.dlinov.nbrbxmlapi
 
 import java.time.LocalDate
-
 import cats.data.EitherT
 import cats.effect.Sync
 import cats.syntax.flatMap._
-import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import org.http4s.{EntityEncoder, HttpRoutes, Response}
 import org.http4s.dsl.Http4sDsl
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.util.Try
 
