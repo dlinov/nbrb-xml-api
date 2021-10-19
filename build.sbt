@@ -14,7 +14,7 @@ lazy val root = project
   .settings(
     name := "nbrb-xml-api",
     version := "0.4.0",
-    scalaVersion := "3.0.2",
+    scalaVersion := "3.1.0",
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % LogbackVersion,
 //      "com.github.pureconfig" %% "pureconfig-core" % PureConfigVersion,
