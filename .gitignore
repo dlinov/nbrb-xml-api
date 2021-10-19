@@ -8,4 +8,6 @@
 .vscode/
 metals.sbt
 
+*.log
+
 .DS_Store
