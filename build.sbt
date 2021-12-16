@@ -1,7 +1,7 @@
 enablePlugins(JavaAppPackaging)
 
-val Http4sVersion = "0.23.6"
-val LogbackVersion = "1.2.6"
+val Http4sVersion = "0.23.7"
+val LogbackVersion = "1.2.8"
 val ScalaXmlVersion = "2.0.1"
 val CirceVersion = "0.14.1"
 //val PureConfigVersion = "0.17.0"
@@ -13,7 +13,7 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "nbrb-xml-api",
-    version := "0.4.0",
+    version := "0.4.1",
     scalaVersion := "3.1.0",
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % LogbackVersion,
