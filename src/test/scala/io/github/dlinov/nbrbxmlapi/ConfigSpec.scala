@@ -5,7 +5,7 @@ import pureconfig.ConfigSource
 
 class ConfigSpec extends munit.FunSuite {
   test("AppConfig") {
-    val expected = AppConfig(23456, RedisConfig("redis://localhost")).asRight[String]
+    val expected = AppConfig(8080, RedisConfig("redis://localhost")).asRight[String]
     val obtained = AppConfig.loadDefault
 
     assertEquals(obtained, expected)
