@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/scala-3.1.0/*.jar'
+          path: '${{ github.workspace }}/target/scala-3.2.1/nbrb-xml-api*.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,5 +47,5 @@ jobs:
         with:
           app-name: 'nbrb-xml-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0F96A9F3746F4D88AF06B3F5B716DEA6 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3A6A9DE9635D4ED6A7F617D46DC76AC9 }}
           package: '*.jar'
