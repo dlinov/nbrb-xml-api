@@ -22,6 +22,9 @@ jobs:
         with:
           redis-version: 6
 
+      - name: Test with sbt
+        run: sbt test
+
       - name: Build with sbt
         run: sbt assembly
 
@@ -50,5 +53,5 @@ jobs:
         with:
           app-name: 'nbrb-xml-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3A6A9DE9635D4ED6A7F617D46DC76AC9 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_ED5C880DACD74CC3A6E7517459EFD96A }}
           package: '*.jar'
