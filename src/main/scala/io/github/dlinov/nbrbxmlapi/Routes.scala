@@ -15,7 +15,7 @@ trait Routes[F[_]: Sync] {
   def apiRoutes(
       rates: Rates[F],
       healthCheck: HealthCheck[F]
-    ): HttpRoutes[F]
+  ): HttpRoutes[F]
 }
 
 object Routes {
@@ -24,8 +24,8 @@ object Routes {
     private val logger = Slf4jLogger.getLogger[F]
 
     override def apiRoutes(
-      rates: Rates[F],
-      healthCheck: HealthCheck[F]
+        rates: Rates[F],
+        healthCheck: HealthCheck[F]
     ): HttpRoutes[F] = {
       import dsl._
       HttpRoutes.of[F] {
@@ -37,19 +37,19 @@ object Routes {
     }
 
     private def wrapServiceCall[A](
-      call: F[Either[Throwable, A]]
+        call: F[Either[Throwable, A]]
     )(implicit ee: EntityEncoder[F, A], dsl: Http4sDsl[F]): F[Response[F]] = {
       import dsl._
-      
+
       // Sync[F].handleError {
-      //   Sync[F].map(call){ result -> 
+      //   Sync[F].map(call){ result ->
       //     logger.info(s"Call result is '$result'") >> Ok(result)
       //   }
       // } { err =>
       //     logger.warn(err)("Failed request to nbrb API: ") >>
       //       InternalServerError(err.getMessage)
       // }.flatten
-      
+
       (for {
         callResult <- EitherT(call)
         _ <- EitherT.right[Throwable](logger.info(s"Call result is '$callResult'"))

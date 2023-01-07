@@ -9,7 +9,7 @@ trait HealthCheck[F[_]] {
 
 object HealthCheck {
   implicit def apply[F[_]](implicit ev: HealthCheck[F]): HealthCheck[F] = ev
-  
+
   def impl[F[_]: Async](
       redis: Resource[F, RedisCommands[F, String, String]]
   ): HealthCheck[F] =
