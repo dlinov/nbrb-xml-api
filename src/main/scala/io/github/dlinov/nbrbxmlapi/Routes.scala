@@ -11,33 +11,56 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.util.Try
 
+trait Routes[F[_]: Sync] {
+  def apiRoutes(
+      rates: Rates[F],
+      healthCheck: HealthCheck[F]
+    ): HttpRoutes[F]
+}
+
 object Routes {
+  def impl[F[_]: Sync] = new Routes[F] {
+    private implicit val dsl: Http4sDsl[F] = new Http4sDsl[F] {}
+    private val logger = Slf4jLogger.getLogger[F]
 
-  def rateRoutes[F[_]: Sync](H: Rates[F]): HttpRoutes[F] = {
-    val dsl = new Http4sDsl[F] {}
-    val logger = Slf4jLogger.getLogger[F]
-    import dsl._
-    HttpRoutes.of[F] { case GET -> Root / "rates" / currency / LocalDateVar(date) =>
-      wrapServiceCall(dsl, logger, () => H.exchangeRate(currency, date))
-    }
-  }
-
-  private def wrapServiceCall[F[_]: Sync, A](
-      dsl: Http4sDsl[F],
-      logger: Logger[F],
-      call: () => F[Either[Throwable, A]]
-  )(implicit ee: EntityEncoder[F, A]): F[Response[F]] = {
-    import dsl._
-    (for {
-      callResult <- EitherT(call())
-      _ <- EitherT.right[Throwable](logger.info(s"Call result is '$callResult'"))
-    } yield Ok(callResult))
-      .leftMap { err =>
-        logger.warn(err)("Failed request to nbrb API: ") >>
-          InternalServerError(err.getMessage)
+    override def apiRoutes(
+      rates: Rates[F],
+      healthCheck: HealthCheck[F]
+    ): HttpRoutes[F] = {
+      import dsl._
+      HttpRoutes.of[F] {
+        case GET -> Root / "ping" =>
+          wrapServiceCall(Sync[F].attempt(healthCheck.ping()))
+        case GET -> Root / "rates" / currency / LocalDateVar(date) =>
+          wrapServiceCall(rates.exchangeRate(currency, date))
       }
-      .merge
-      .flatten
+    }
+
+    private def wrapServiceCall[A](
+      call: F[Either[Throwable, A]]
+    )(implicit ee: EntityEncoder[F, A], dsl: Http4sDsl[F]): F[Response[F]] = {
+      import dsl._
+      
+      // Sync[F].handleError {
+      //   Sync[F].map(call){ result -> 
+      //     logger.info(s"Call result is '$result'") >> Ok(result)
+      //   }
+      // } { err =>
+      //     logger.warn(err)("Failed request to nbrb API: ") >>
+      //       InternalServerError(err.getMessage)
+      // }.flatten
+      
+      (for {
+        callResult <- EitherT(call)
+        _ <- EitherT.right[Throwable](logger.info(s"Call result is '$callResult'"))
+      } yield Ok(callResult))
+        .leftMap { err =>
+          logger.warn(err)("Failed request to nbrb API: ") >>
+            InternalServerError(err.getMessage)
+        }
+        .merge
+        .flatten
+    }
   }
 
   object LocalDateVar {

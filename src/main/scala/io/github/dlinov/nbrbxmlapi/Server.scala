@@ -19,7 +19,8 @@ object Server {
       client <- BlazeClientBuilder[F].stream
       redisResource = Redis[F].utf8(config.redis.connectionString)
       ratesProcessor = Rates.impl[F](client, redisResource)
-      httpApp = Routes.rateRoutes[F](ratesProcessor).orNotFound
+      healthCheck = HealthCheck.impl[F](redisResource)
+      httpApp = Routes.impl[F].apiRoutes(ratesProcessor, healthCheck).orNotFound
       finalHttpApp = GZip(Logger.httpApp(logHeaders = true, logBody = true)(httpApp))
       exitCode <- BlazeServerBuilder[F]
         .bindHttp(config.port, "0.0.0.0")
