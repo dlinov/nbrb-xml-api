@@ -1,20 +1,20 @@
 enablePlugins(JavaAppPackaging)
 
 val Http4sVersion = "0.23.7"
-val LogbackVersion = "1.2.8"
-val ScalaXmlVersion = "2.0.1"
-val CirceVersion = "0.14.1"
+val LogbackVersion = "1.4.4"
+val ScalaXmlVersion = "2.1.0"
+val CirceVersion = "0.14.3"
 //val PureConfigVersion = "0.17.0"
-val LightbendConfigVersion = "1.4.1"
-val Redis4CatsVersion = "1.0.0"
-val Log4CatsVersion = "2.1.1"
+val LightbendConfigVersion = "1.4.2"
+val Redis4CatsVersion = "1.2.0"
+val Log4CatsVersion = "2.5.0"
 
 lazy val root = project
   .in(file("."))
   .settings(
     name := "nbrb-xml-api",
-    version := "0.4.1",
-    scalaVersion := "3.1.0",
+    version := "0.4.2",
+    scalaVersion := "3.2.1", // upgrade target dir in .github/worklow after scala version bump
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % LogbackVersion,
 //      "com.github.pureconfig" %% "pureconfig-core" % PureConfigVersion,
@@ -43,6 +43,8 @@ scalacOptions ++= Seq(
 ThisBuild / assemblyMergeStrategy := {
   case PathList("META-INF", "io.netty.versions.properties") =>
     MergeStrategy.filterDistinctLines
+  case PathList("module-info.class") =>
+    MergeStrategy.first
   case x =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
