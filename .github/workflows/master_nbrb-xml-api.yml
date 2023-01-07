@@ -18,6 +18,9 @@ jobs:
       - uses: olafurpg/setup-scala@v13
         with:
           java-version: openjdk@1.17
+      - uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: 6
 
       - name: Build with sbt
         run: sbt assembly

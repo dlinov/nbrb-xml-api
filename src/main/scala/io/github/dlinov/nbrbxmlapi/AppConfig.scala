@@ -1,25 +1,28 @@
 package io.github.dlinov.nbrbxmlapi
 
-final case class Port(number: Int) extends AnyVal
+import cats.syntax.either._
+// import com.typesafe.config.ConfigFactory
+import pureconfig._
+import pureconfig.ConfigReader._
+import pureconfig.generic.derivation.default._
 
-final case class RedisConfig(url: String) {
-  def canonicalUri: String = {
-    if (url.startsWith("redis://") || url.startsWith("rediss://")) { // heroku format
-      url
-    } else { // azure format - host:port,password=<..>,ssl=True,abortConnect=False
-      val urlParts = url.split(',')
-      val hostAndPort = urlParts(0)
-      val password = urlParts
-        .find(_.startsWith("password="))
-        .map(_.substring("password=".length))
-        .getOrElse("")
-      val useSsl = urlParts
-        .find(_.startsWith("ssl="))
-        .flatMap(_.substring("ssl=".length).toBooleanOption)
-        .getOrElse(true)
-      s"redis${if (useSsl) "s" else ""}://:$password@$hostAndPort"
-    }
+final case class RedisConfig(connectionString: String) derives ConfigReader
+
+final case class AppConfig(port: Int, redis: RedisConfig) derives ConfigReader
+
+object AppConfig {
+  def loadDefault = {
+    // pureconfig
+    ConfigSource.default.load[AppConfig].leftMap(_.prettyPrint())
+
+    // lightbend config
+    // Try {
+    //   val config = ConfigFactory.load()
+    //   AppConfig(
+    //     port = config.getInt("port"),
+    //     redis = RedisConfig(url = config.getString("redis.url"))
+    //   )
+    // }.toEither
+    //   .leftMap(_.getMessage)
   }
 }
-
-final case class AppConfig(port: Port, redis: RedisConfig)

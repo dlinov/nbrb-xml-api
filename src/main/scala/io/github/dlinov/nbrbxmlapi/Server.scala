@@ -17,13 +17,12 @@ object Server {
   ): Stream[F, Nothing] = {
     for {
       client <- BlazeClientBuilder[F].stream
-      redisUri = config.redis.canonicalUri
-      redisResource = Redis[F].utf8(redisUri)
+      redisResource = Redis[F].utf8(config.redis.connectionString)
       ratesProcessor = Rates.impl[F](client, redisResource)
       httpApp = Routes.rateRoutes[F](ratesProcessor).orNotFound
       finalHttpApp = GZip(Logger.httpApp(logHeaders = true, logBody = true)(httpApp))
       exitCode <- BlazeServerBuilder[F]
-        .bindHttp(config.port.number, "0.0.0.0")
+        .bindHttp(config.port, "0.0.0.0")
         .withHttpApp(finalHttpApp)
         .serve
     } yield exitCode
