@@ -4,6 +4,9 @@ import cats.effect.{Async, Sync}
 import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.effect.Log
 import fs2.Stream
+import io.github.dlinov.nbrbxmlapi.caches.serde.CirceSerde
+import io.github.dlinov.nbrbxmlapi.caches.RedisRatesCache
+import io.github.dlinov.nbrbxmlapi.sources._
 import org.http4s.blaze.client.BlazeClientBuilder
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.implicits._
@@ -18,7 +21,10 @@ object Server {
     for {
       client <- BlazeClientBuilder[F].stream
       redisResource = Redis[F].utf8(config.redis.connectionString)
-      ratesProcessor = Rates.impl[F](client, redisResource)
+      cache = new RedisRatesCache(redisResource, CirceSerde.currencyRate)
+      // source = new Myfinby(client)
+      source = new Nbrbby[F](client)
+      ratesProcessor = Rates.genericImpl[F](cache, source)
       healthCheck = HealthCheck.impl[F](redisResource)
       httpApp = Routes.impl[F].apiRoutes(ratesProcessor, healthCheck).orNotFound
       finalHttpApp = GZip(Logger.httpApp(logHeaders = true, logBody = true)(httpApp))

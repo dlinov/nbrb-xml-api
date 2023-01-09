@@ -1,6 +1,6 @@
 package io.github.dlinov.nbrbxmlapi.parsers
 
-import io.github.dlinov.nbrbxmlapi.Rates.CurrencyRate
+import io.github.dlinov.nbrbxmlapi.CurrencyRate
 
 trait RatesParser {
   import RatesParser._

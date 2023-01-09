@@ -1,5 +1,9 @@
 package io.github.dlinov.nbrbxmlapi.httpclients
 
-trait RatesHttpClient[F[_]] {
-  
+import java.time.LocalDate
+
+trait RatesHttpClient[F[_], A] {
+
+  def get(url: String): F[A]
+
 }

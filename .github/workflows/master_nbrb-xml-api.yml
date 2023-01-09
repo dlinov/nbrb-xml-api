@@ -22,11 +22,8 @@ jobs:
         with:
           redis-version: 6
 
-      - name: Test with sbt
-        run: sbt test
-
-      - name: Build with sbt
-        run: sbt assembly
+      - name: Check codestyle, test and build with sbt
+        run: sbt scalafmtCheck test assembly
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

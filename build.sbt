@@ -30,7 +30,7 @@ lazy val root = project
       "org.http4s" %% "http4s-dsl" % Http4sVersion,
       "org.http4s" %% "http4s-scala-xml" % Http4sVersion,
       "org.scala-lang.modules" %% "scala-xml" % ScalaXmlVersion,
-      "org.typelevel" %% "munit-cats-effect-3" % MUnitCatsVersion % Test,
+      "org.typelevel" %% "munit-cats-effect-3" % MUnitCatsVersion % Test
     )
   )
 
