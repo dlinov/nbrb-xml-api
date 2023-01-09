@@ -9,6 +9,7 @@ val PureConfigVersion = "0.17.2"
 val Redis4CatsVersion = "1.3.0"
 val Log4CatsVersion = "2.5.0"
 val MUnitCatsVersion = "1.0.7"
+val JsoupVersion = "1.15.3"
 
 lazy val root = project
   .in(file("."))
@@ -29,6 +30,7 @@ lazy val root = project
       "org.http4s" %% "http4s-circe" % Http4sVersion,
       "org.http4s" %% "http4s-dsl" % Http4sVersion,
       "org.http4s" %% "http4s-scala-xml" % Http4sVersion,
+      "org.jsoup" % "jsoup" % JsoupVersion,
       "org.scala-lang.modules" %% "scala-xml" % ScalaXmlVersion,
       "org.typelevel" %% "munit-cats-effect-3" % MUnitCatsVersion % Test
     )

@@ -11,7 +11,8 @@ class RedisSpec extends CatsEffectSuite {
     val config = RedisConfig("redis://localhost:6379/0")
     val key = "test-key"
     val expected = "test-value"
-    val obtained = Redis[IO].utf8(config.connectionString)
+    val obtained = Redis[IO]
+      .utf8(config.connectionString)
       .use { redis =>
         for {
           _ <- redis.ping
@@ -19,7 +20,7 @@ class RedisSpec extends CatsEffectSuite {
           fetched <- redis.get(key)
         } yield fetched
       }
-    
+
     assertIO(obtained, expected.some)
   }
 }
