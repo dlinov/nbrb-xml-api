@@ -22,8 +22,8 @@ object Server {
       client <- BlazeClientBuilder[F].stream
       redisResource = Redis[F].utf8(config.redis.connectionString)
       cache = new RedisRatesCache(redisResource, CirceSerde.currencyRate)
-      // source = new Myfinby(client)
-      source = new Nbrbby[F](client)
+      source = new Myfinby[F](client)
+      // source = new Nbrbby[F](client)
       ratesProcessor = Rates.genericImpl[F](cache, source)
       healthCheck = HealthCheck.impl[F](redisResource)
       httpApp = Routes.impl[F].apiRoutes(ratesProcessor, healthCheck).orNotFound
