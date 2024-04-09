@@ -1,13 +1,11 @@
 package io.github.dlinov.nbrbxmlapi
 
 import java.time.LocalDate
-import cats.data.EitherT
 import cats.effect.Sync
-import cats.syntax.flatMap._
+import cats.syntax.flatMap.*
 import io.github.dlinov.nbrbxmlapi.codecs.Http4sEntityEncoders
-import org.http4s.{EntityEncoder, HttpRoutes, Response}
+import org.http4s.{EntityEncoder, HttpRoutes, Response, StaticFile}
 import org.http4s.dsl.Http4sDsl
-import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.util.Try
@@ -17,10 +15,12 @@ trait Routes[F[_]: Sync] {
       rates: Rates[F],
       healthCheck: HealthCheck[F]
   ): HttpRoutes[F]
+
+  def staticRoutes: HttpRoutes[F]
 }
 
 object Routes {
-  def impl[F[_]: Sync] = new Routes[F] with Http4sEntityEncoders {
+  def impl[F[_]: Sync]: Routes[F] & Http4sEntityEncoders = new Routes[F] with Http4sEntityEncoders {
     private implicit val dsl: Http4sDsl[F] = new Http4sDsl[F] {}
     private val logger = Slf4jLogger.getLogger[F]
 
@@ -34,6 +34,13 @@ object Routes {
           wrapServiceCall(healthCheck.ping())
         case GET -> Root / "rates" / currency / LocalDateVar(date) =>
           wrapServiceCall(rates.exchangeRate(currency, date))
+      }
+    }
+
+    override def staticRoutes: HttpRoutes[F] = {
+      import dsl._
+      HttpRoutes.of[F] { case GET -> Root / "favicon.ico" =>
+        StaticFile.fromResource("favicon.ico").getOrElseF(NotFound())
       }
     }
 

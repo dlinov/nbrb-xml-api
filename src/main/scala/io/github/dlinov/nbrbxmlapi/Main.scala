@@ -4,8 +4,6 @@ import cats.effect.{ExitCode, IO, IOApp}
 import cats.syntax.either._
 import org.slf4j.LoggerFactory
 
-import scala.util.Try
-
 object Main extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {

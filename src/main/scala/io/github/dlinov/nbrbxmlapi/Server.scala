@@ -1,6 +1,8 @@
 package io.github.dlinov.nbrbxmlapi
 
+import cats.SemigroupK
 import cats.effect.{Async, Sync}
+import cats.syntax.semigroupk.*
 import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.effect.Log
 import fs2.Stream
@@ -16,7 +18,7 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object Server {
 
-  def stream[F[_]: Async: Compression](
+  def stream[F[_]: Async: Compression: SemigroupK](
       config: AppConfig
   ): Stream[F, Nothing] = {
     for {
@@ -27,8 +29,10 @@ object Server {
       // source = new Nbrbby[F](client)
       ratesProcessor = Rates.genericImpl[F](cache, source)
       healthCheck = HealthCheck.impl[F](redisResource)
-      httpApp = Routes.impl[F].apiRoutes(ratesProcessor, healthCheck).orNotFound
-      finalHttpApp = GZip(Logger.httpApp(logHeaders = true, logBody = true)(httpApp))
+      rs = Routes.impl[F]
+      httpApp = rs.apiRoutes(ratesProcessor, healthCheck).orNotFound
+      loggedApi = Logger.httpApp(logHeaders = true, logBody = true)(httpApp)
+      finalHttpApp = GZip(loggedApi <+> rs.staticRoutes.orNotFound)
       exitCode <- BlazeServerBuilder[F]
         .bindHttp(config.port, "0.0.0.0")
         .withHttpApp(finalHttpApp)
