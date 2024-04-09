@@ -12,8 +12,5 @@ object HealthCheck {
 
   def impl[F[_]: Async](
       redis: Resource[F, RedisCommands[F, String, String]]
-  ): HealthCheck[F] =
-    new HealthCheck[F] {
-      override def ping(): F[String] = redis.use(_.ping)
-    }
+  ): HealthCheck[F] = () => redis.use(_.ping)
 }

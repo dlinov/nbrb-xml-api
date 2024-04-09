@@ -11,7 +11,7 @@ final case class RedisConfig(connectionString: String) derives ConfigReader
 final case class AppConfig(port: Int, redis: RedisConfig) derives ConfigReader
 
 object AppConfig {
-  def loadDefault = {
+  def loadDefault: Either[String, AppConfig] = {
     // pureconfig
     ConfigSource.default.load[AppConfig].leftMap(_.prettyPrint())
 
