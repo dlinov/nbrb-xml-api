@@ -52,6 +52,8 @@ ThisBuild / assemblyMergeStrategy := {
     MergeStrategy.filterDistinctLines
   case PathList("module-info.class") =>
     MergeStrategy.first
+  case path if path.endsWith("/module-info.class") =>
+    MergeStrategy.first
   case x =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
