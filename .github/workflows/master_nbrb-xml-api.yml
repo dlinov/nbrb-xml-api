@@ -46,9 +46,16 @@ jobs:
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'nbrb-xml-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_ED5C880DACD74CC3A6E7517459EFD96A }}
           package: '*.jar'
+
+      - name: Ping deployed app
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}/ping
+          max-attempts: 5
+          retry-delay: 5s
