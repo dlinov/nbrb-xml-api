@@ -4,18 +4,19 @@ import cats.effect.{Async, Sync}
 import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.effect.Log
 import fs2.Stream
+import fs2.compression.Compression
 import io.github.dlinov.nbrbxmlapi.caches.serde.CirceSerde
 import io.github.dlinov.nbrbxmlapi.caches.RedisRatesCache
-import io.github.dlinov.nbrbxmlapi.sources._
+import io.github.dlinov.nbrbxmlapi.sources.*
 import org.http4s.blaze.client.BlazeClientBuilder
 import org.http4s.blaze.server.BlazeServerBuilder
-import org.http4s.implicits._
+import org.http4s.implicits.*
 import org.http4s.server.middleware.{GZip, Logger}
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object Server {
 
-  def stream[F[_]: Async](
+  def stream[F[_]: Async: Compression](
       config: AppConfig
   ): Stream[F, Nothing] = {
     for {

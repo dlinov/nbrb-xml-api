@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: olafurpg/setup-scala@v13
         with:
-          java-version: openjdk@1.17
+          java-version: openjdk@1.22
       - uses: supercharge/redis-github-action@1.4.0
         with:
           redis-version: 6
@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: scala-app
-          path: '${{ github.workspace }}/target/scala-3.2.1/nbrb-xml-api*.jar'
+          path: '${{ github.workspace }}/target/scala-3.4.1/nbrb-xml-api*.jar'
 
   deploy:
     runs-on: ubuntu-latest

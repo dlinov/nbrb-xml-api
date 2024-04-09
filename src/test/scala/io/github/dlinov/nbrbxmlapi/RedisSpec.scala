@@ -1,6 +1,6 @@
 package io.github.dlinov.nbrbxmlapi
 
-import cats.effect.{IO, Resource}
+import cats.effect.IO
 import cats.syntax.option._
 import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.effect.Log.Stdout._
