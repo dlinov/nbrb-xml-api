@@ -15,9 +15,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: olafurpg/setup-scala@v14
+      - uses: coursier/setup-action@v1
         with:
-          java-version: openjdk@1.22
+          jvm: adoptium:1.21
       - uses: supercharge/redis-github-action@1.8.0
         with:
           redis-version: 7
