@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: scala-app
-          path: '${{ github.workspace }}/target/scala-3.4.1/nbrb-xml-api*.jar'
+          path: '${{ github.workspace }}/target/scala-3.5.0/nbrb-xml-api*.jar'
 
   deploy:
     runs-on: ubuntu-latest
