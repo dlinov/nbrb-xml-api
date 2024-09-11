@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: coursier/setup-action@v1
         with:
-          jvm: adoptium:1.21
+          jvm: adoptium:1.21.0.4
       - uses: supercharge/redis-github-action@1.8.0
         with:
           redis-version: 7
@@ -26,7 +26,7 @@ jobs:
         run: sbt scalafmtCheck test assembly
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: scala-app
           path: '${{ github.workspace }}/target/scala-3.5.0/nbrb-xml-api*.jar'
@@ -40,7 +40,7 @@ jobs:
     
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: scala-app
 
